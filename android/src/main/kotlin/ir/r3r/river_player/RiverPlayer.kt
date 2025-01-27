@@ -480,9 +480,10 @@ internal class RiverPlayer(
         } 
         val mediaItem = mediaItemBuilder.build()
 
+        var drmSessionManagerProvider: DrmSessionManagerProvider? = null
         drmSessionManager?.let { drmSessionManager ->
-            mediaFactory.setDrmSessionManagerProvider(DrmSessionManagerProvider { drmSessionManager })
-        } 
+            drmSessionManagerProvider = DrmSessionManagerProvider { drmSessionManager }
+        }
 
      return when (type) {
             C.CONTENT_TYPE_SS -> SsMediaSource.Factory(
