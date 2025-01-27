@@ -234,8 +234,13 @@ class BetterPlayerController {
       (call) async {
         switch (call.method) {
           case 'onPipEntered':
+            _isPipActive = true;
             break;
           case 'onPipExited':
+            if (isPlaying() == false) {
+              setControlsVisibility(true);
+            } 
+            _isPipActive = false;
             break;
           case 'onPipAction':
             String arg = call.arguments;
@@ -1123,7 +1128,6 @@ class BetterPlayerController {
             left: 0, top: 0, width: 0, height: 0);
         enterFullScreen();
         _postEvent(BetterPlayerEvent(BetterPlayerEventType.pipStart));
-        _isPipActive = true;
         return;
       }
       if (Platform.isIOS) {
@@ -1158,7 +1162,6 @@ class BetterPlayerController {
     if (videoPlayerController == null) {
       throw StateError("The data source has not been initialized");
     }
-    _isPipActive = false;
     return videoPlayerController!.disablePictureInPicture();
   }
 
