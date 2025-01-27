@@ -15,6 +15,7 @@ class BetterPlayerCupertinoVideoProgressBar extends StatefulWidget {
     this.onDragStart,
     this.onDragUpdate,
     this.onTapDown,
+    this.showHandleShadow = true,
     Key? key,
   })  : colors = colors ?? BetterPlayerProgressColors(),
         super(key: key);
@@ -26,6 +27,7 @@ class BetterPlayerCupertinoVideoProgressBar extends StatefulWidget {
   final Function()? onDragEnd;
   final Function()? onDragUpdate;
   final Function()? onTapDown;
+  final bool showHandleShadow;
 
   @override
   _VideoProgressBarState createState() {
@@ -33,8 +35,7 @@ class BetterPlayerCupertinoVideoProgressBar extends StatefulWidget {
   }
 }
 
-class _VideoProgressBarState
-    extends State<BetterPlayerCupertinoVideoProgressBar> {
+class _VideoProgressBarState extends State<BetterPlayerCupertinoVideoProgressBar> {
   _VideoProgressBarState() {
     listener = () {
       if (mounted) setState(() {});
@@ -46,8 +47,7 @@ class _VideoProgressBarState
 
   VideoPlayerController? get controller => widget.controller;
 
-  BetterPlayerController? get betterPlayerController =>
-      widget.betterPlayerController;
+  BetterPlayerController? get betterPlayerController => widget.betterPlayerController;
 
   bool shouldPlayAfterDragEnd = false;
   Duration? lastSeek;
@@ -68,8 +68,7 @@ class _VideoProgressBarState
 
   @override
   Widget build(BuildContext context) {
-    final bool enableProgressBarDrag = betterPlayerController!
-        .betterPlayerControlsConfiguration.enableProgressBarDrag;
+    final bool enableProgressBarDrag = betterPlayerController!.betterPlayerControlsConfiguration.enableProgressBarDrag;
     return GestureDetector(
       onHorizontalDragStart: (DragStartDetails details) {
         if (!controller!.value.initialized || !enableProgressBarDrag) {
@@ -128,6 +127,7 @@ class _VideoProgressBarState
             painter: _ProgressBarPainter(
               _getValue(),
               widget.colors,
+              widget.showHandleShadow,
             ),
           ),
         ),
@@ -184,10 +184,11 @@ class _VideoProgressBarState
 }
 
 class _ProgressBarPainter extends CustomPainter {
-  _ProgressBarPainter(this.value, this.colors);
+  _ProgressBarPainter(this.value, this.colors, this.showHandleShadow);
 
   VideoPlayerValue value;
   BetterPlayerProgressColors colors;
+  final bool showHandleShadow;
 
   @override
   bool shouldRepaint(CustomPainter painter) {
@@ -213,10 +214,8 @@ class _ProgressBarPainter extends CustomPainter {
     if (!value.initialized) {
       return;
     }
-    final double playedPartPercent =
-        value.position.inMilliseconds / value.duration!.inMilliseconds;
-    final double playedPart =
-        playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
+    final double playedPartPercent = value.position.inMilliseconds / value.duration!.inMilliseconds;
+    final double playedPart = playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
     for (final DurationRange range in value.buffered) {
       final double start = range.startFraction(value.duration!) * size.width;
       final double end = range.endFraction(value.duration!) * size.width;
@@ -243,11 +242,11 @@ class _ProgressBarPainter extends CustomPainter {
     );
 
     final shadowPath = Path()
-      ..addOval(Rect.fromCircle(
-          center: Offset(playedPart, baseOffset + barHeight / 2),
-          radius: handleHeight));
+      ..addOval(Rect.fromCircle(center: Offset(playedPart, baseOffset + barHeight / 2), radius: handleHeight));
 
-    canvas.drawShadow(shadowPath, Colors.black, 0.2, false);
+    if (showHandleShadow) {
+      canvas.drawShadow(shadowPath, Colors.red, 0.2, false);
+    }
     canvas.drawCircle(
       Offset(playedPart, baseOffset + barHeight / 2),
       handleHeight,
