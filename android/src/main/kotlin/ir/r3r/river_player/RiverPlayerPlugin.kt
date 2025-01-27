@@ -159,13 +159,15 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 var customDefaultLoadControl: CustomDefaultLoadControl? = null
                 if (call.hasArgument(MIN_BUFFER_MS) && call.hasArgument(MAX_BUFFER_MS) &&
                     call.hasArgument(BUFFER_FOR_PLAYBACK_MS) &&
-                    call.hasArgument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS)
+                    call.hasArgument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS) &&
+                    call.hasArgument(BACK_BUFFER_DURATION_MS)
                 ) {
                     customDefaultLoadControl = CustomDefaultLoadControl(
                         call.argument(MIN_BUFFER_MS),
                         call.argument(MAX_BUFFER_MS),
                         call.argument(BUFFER_FOR_PLAYBACK_MS),
-                        call.argument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS)
+                        call.argument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS),
+                        call.argument(BACK_BUFFER_DURATION_MS)
                     )
                 }
                 val player = RiverPlayer(
@@ -628,7 +630,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         const val MIN_BUFFER_MS = "minBufferMs"
         const val MAX_BUFFER_MS = "maxBufferMs"
         const val BUFFER_FOR_PLAYBACK_MS = "bufferForPlaybackMs"
-        const val BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = "bufferForPlaybackAfterRebufferMs"
+        const val BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = "bufferForPlaybackAfterRebufferMs" 
+        const val BACK_BUFFER_DURATION_MS = "backBufferDurationMs"
         const val CACHE_KEY_PARAMETER = "cacheKey"
         private const val INIT_METHOD = "init"
         private const val CREATE_METHOD = "create"

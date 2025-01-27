@@ -29,7 +29,14 @@ internal class CustomDefaultLoadControl {
      * action.
      */
     @JvmField
-    val bufferForPlaybackAfterRebufferMs: Int
+    val bufferForPlaybackAfterRebufferMs: Int 
+
+    
+    /**
+     * Back buffer duration, in milliseconds
+     */
+    @JvmField
+    val backBufferDurationMs: Int
 
     constructor() {
         minBufferMs = DefaultLoadControl.DEFAULT_MIN_BUFFER_MS
@@ -37,6 +44,7 @@ internal class CustomDefaultLoadControl {
         bufferForPlaybackMs = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS
         bufferForPlaybackAfterRebufferMs =
             DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+        backBufferDurationMs = DefaultLoadControl.DEFAULT_BACK_BUFFER_DURATION_MS
     }
 
     constructor(
@@ -44,6 +52,8 @@ internal class CustomDefaultLoadControl {
         maxBufferMs: Int?,
         bufferForPlaybackMs: Int?,
         bufferForPlaybackAfterRebufferMs: Int?
+        bufferForPlaybackAfterRebufferMs: Int?,
+        backBufferDurationMs: Int?
     ) {
         this.minBufferMs = minBufferMs ?: DefaultLoadControl.DEFAULT_MIN_BUFFER_MS
         this.maxBufferMs = maxBufferMs ?: DefaultLoadControl.DEFAULT_MAX_BUFFER_MS
@@ -51,5 +61,7 @@ internal class CustomDefaultLoadControl {
             bufferForPlaybackMs ?: DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS
         this.bufferForPlaybackAfterRebufferMs = bufferForPlaybackAfterRebufferMs
             ?: DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+        this.backBufferDurationMs = backBufferDurationMs ?: DefaultLoadControl.DEFAULT_BACK_BUFFER_DURATION_MS
     }
+}
 }
