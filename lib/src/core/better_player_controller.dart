@@ -216,7 +216,10 @@ class BetterPlayerController {
 
   bool get isPipActive => _isPipActive;
 
-  BetterPlayerPiPActions? _pipActions;
+  BetterPlayerPiPActions? _pipActions; 
+
+  ///Whether the player by default enters full screen mode
+  bool? _fullScreenByDefault;
 
   BetterPlayerController(
     this.betterPlayerConfiguration, {
@@ -596,7 +599,7 @@ class BetterPlayerController {
         ?.videoEventStreamController.stream
         .listen(_handleVideoEvent);
 
-    final fullScreenByDefault = betterPlayerConfiguration.fullScreenByDefault;
+    final fullScreenByDefault = _fullScreenByDefault ?? betterPlayerConfiguration.fullScreenByDefault;
     if (betterPlayerConfiguration.autoPlay) {
       if (fullScreenByDefault && !isFullScreen) {
         enterFullScreen();
@@ -651,6 +654,11 @@ class BetterPlayerController {
     } else {
       _postControllerEvent(BetterPlayerControllerEvent.hideFullscreen);
     }
+  } 
+
+  ///Enable/Disable full screen by default parameter 
+  void setFullScreenByDefault(bool enable) {
+    _fullScreenByDefault = enable;
   }
 
   ///Start video playback. Play will be triggered only if current lifecycle state
