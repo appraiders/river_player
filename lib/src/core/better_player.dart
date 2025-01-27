@@ -129,13 +129,21 @@ class _BetterPlayerState extends State<BetterPlayer>
     super.didUpdateWidget(oldWidget);
   }
 
-  void onControllerEvent(BetterPlayerControllerEvent event) {
+  void onControllerEvent(BetterPlayerControllerEvent event) async {
     switch (event) {
       case BetterPlayerControllerEvent.openFullscreen:
         onFullScreenChanged();
         break;
       case BetterPlayerControllerEvent.hideFullscreen:
         onFullScreenChanged();
+        break;
+      case BetterPlayerControllerEvent.setupDataSource:
+        if (widget.controller.isPipActive == true) {
+          await onFullScreenChanged();
+          await onFullScreenChanged();
+        } else {
+          setState(() {});
+        }
         break;
       default:
         setState(() {});

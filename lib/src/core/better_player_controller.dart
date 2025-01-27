@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:river_player/river_player.dart';
 import 'package:river_player/src/configuration/better_player_controller_event.dart';
@@ -211,6 +212,12 @@ class BetterPlayerController {
   ///Currently displayed [BetterPlayerSubtitle].
   BetterPlayerSubtitle? renderedSubtitle;
 
+  bool _isPipActive = false;
+
+  bool get isPipActive => _isPipActive;
+
+  BetterPlayerPiPActions? _pipActions;
+
   BetterPlayerController(
     this.betterPlayerConfiguration, {
     this.betterPlayerPlaylistConfiguration,
@@ -222,6 +229,39 @@ class BetterPlayerController {
     if (betterPlayerDataSource != null) {
       setupDataSource(betterPlayerDataSource);
     }
+
+    MethodChannel('better_player.pip_mode').setMethodCallHandler(
+      (call) async {
+        switch (call.method) {
+          case 'onPipEntered':
+            break;
+          case 'onPipExited':
+            break;
+          case 'onPipAction':
+            String arg = call.arguments;
+
+            switch (arg) {
+              case 'play':
+              case 'pause':
+                _pipActions?.onPause?.call(this);
+                break;
+              case 'next':
+                _pipActions?.onNext?.call(this);
+                break;
+              case 'previous':
+                _pipActions?.onPrevious?.call(this);
+                break;
+              case 'forward':
+                _pipActions?.onForward?.call(this);
+                break;
+              case 'backward':
+                _pipActions?.onBackward?.call(this);
+                break;
+            }
+            break;
+        }
+      },
+    );
   }
 
   ///Get BetterPlayerController from context. Used in InheritedWidget.
@@ -1076,11 +1116,14 @@ class BetterPlayerController {
       _wasControlsEnabledBeforePiP = _controlsEnabled;
       setControlsEnabled(false);
       if (Platform.isAndroid) {
-        _wasInFullScreenBeforePiP = _isFullScreen;
+        if (!_isFullScreen) {
+          enterFullScreen();
+        }
         await videoPlayerController?.enablePictureInPicture(
             left: 0, top: 0, width: 0, height: 0);
         enterFullScreen();
         _postEvent(BetterPlayerEvent(BetterPlayerEventType.pipStart));
+        _isPipActive = true;
         return;
       }
       if (Platform.isIOS) {
@@ -1115,6 +1158,7 @@ class BetterPlayerController {
     if (videoPlayerController == null) {
       throw StateError("The data source has not been initialized");
     }
+    _isPipActive = false;
     return videoPlayerController!.disablePictureInPicture();
   }
 
@@ -1183,6 +1227,27 @@ class BetterPlayerController {
   void setControlsAlwaysVisible(bool controlsAlwaysVisible) {
     _controlsAlwaysVisible = controlsAlwaysVisible;
     _controlsVisibilityStreamController.add(controlsAlwaysVisible);
+  }
+
+  void setPipActions(BetterPlayerPiPActions actions) async {
+    if (videoPlayerController == null) {
+      throw StateError("The data source has not been initialized");
+    }
+    _pipActions = actions;
+
+    if (Platform.isAndroid) {
+      await videoPlayerController?.setPictureInPictureActions([
+        if (actions.onPrevious != null) 'previous',
+        if (actions.onBackward != null) 'backward',
+        if (actions.onPause != null) 'pause',
+        if (actions.onForward != null) 'forward',
+        if (actions.onNext != null) 'next',
+      ]);
+    } else if (Platform.isIOS) {
+      BetterPlayerUtils.log("Not implemented for iOS");
+    } else {
+      BetterPlayerUtils.log("Unsupported PiP in current platform.");
+    }
   }
 
   ///Retry data source if playback failed.

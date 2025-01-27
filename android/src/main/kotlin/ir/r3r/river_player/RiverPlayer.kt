@@ -525,6 +525,20 @@ internal class RiverPlayer(
         exoPlayer?.setVideoSurface(surface)
         setAudioAttributes(exoPlayer, true)
         exoPlayer?.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPlaying) {
+                    val event: MutableMap<String, Any> = HashMap()
+                    event["event"] = "play"
+                    eventSink.success(event)
+                } else {
+                    if (exoPlayer?.getPlaybackState() == Player.STATE_READY) {
+                        val event: MutableMap<String, Any> = HashMap()
+                        event["event"] = "pause"
+                        eventSink.success(event)
+                    }
+                }
+            }
+
             override fun onPlaybackStateChanged(playbackState: Int) {
                 when (playbackState) {
                     Player.STATE_BUFFERING -> {
