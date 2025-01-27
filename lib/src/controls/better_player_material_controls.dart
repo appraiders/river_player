@@ -106,7 +106,15 @@ class _BetterPlayerMaterialControlsState
               right: 0,
               child: _buildTopBar(),
             ),
-            Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomBar()),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: MediaQuery.of(context).padding,
+                child: _buildBottomBar(),
+              ),
+            ),
             _buildNextVideoWidget(),
           ],
         ),
