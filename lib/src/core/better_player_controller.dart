@@ -516,7 +516,9 @@ class BetterPlayerController {
               _betterPlayerDataSource?.notificationConfiguration?.activityName,
           clearKey: _betterPlayerDataSource?.drmConfiguration?.clearKey,
           videoExtension: _betterPlayerDataSource!.videoExtension,
-          bufferingConfiguration: _betterPlayerDataSource?.bufferingConfiguration,
+          bufferingConfiguration: _betterPlayerDataSource?.bufferingConfiguration, 
+          allowChunklessPreparation:
+              _betterPlayerDataSource?.allowChunklessPreparation,
         );
 
         break;

@@ -318,7 +318,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 0L,
                 overriddenDuration.toLong(),
                 null,
-                null, null, null
+                null, null, null, 
+                null
             )
         } else {
             val useCache = getParameter(dataSource, USE_CACHE_PARAMETER, false)
@@ -333,7 +334,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             val licenseUrl = getParameter<String?>(dataSource, LICENSE_URL_PARAMETER, null)
             val clearKey = getParameter<String?>(dataSource, DRM_CLEARKEY_PARAMETER, null)
             val drmHeaders: Map<String, String> =
-                getParameter(dataSource, DRM_HEADERS_PARAMETER, HashMap())
+                getParameter(dataSource, DRM_HEADERS_PARAMETER, HashMap()) 
+            val allowChunklessPreparation = getParameter<Boolean?>(dataSource, ALLOW_CHUNKLESS_PREPARATION, null)
             player.setDataSource(
                 flutterState!!.applicationContext,
                 key,
@@ -348,7 +350,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 licenseUrl,
                 drmHeaders,
                 cacheKey,
-                clearKey
+                clearKey,
+                allowChunklessPreparation
             )
         }
     }
@@ -617,7 +620,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         private const val INDEX_PARAMETER = "index"
         private const val LICENSE_URL_PARAMETER = "licenseUrl"
         private const val DRM_HEADERS_PARAMETER = "drmHeaders"
-        private const val DRM_CLEARKEY_PARAMETER = "clearKey"
+        private const val DRM_CLEARKEY_PARAMETER = "clearKey" 
+        private const val ALLOW_CHUNKLESS_PREPARATION = "allowChunklessPreparation"
         private const val MIX_WITH_OTHERS_PARAMETER = "mixWithOthers"
         private const val ACTIONS_PARAMETER = "actions"
         const val URL_PARAMETER = "url"

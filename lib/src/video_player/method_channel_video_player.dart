@@ -94,7 +94,8 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
           'drmHeaders': dataSource.drmHeaders,
           'activityName': dataSource.activityName,
           'clearKey': dataSource.clearKey,
-          'videoExtension': dataSource.videoExtension,
+          'videoExtension': dataSource.videoExtension, 
+          'allowChunklessPreparation': dataSource.allowChunklessPreparation,
         };
         break;
       case DataSourceType.file:
