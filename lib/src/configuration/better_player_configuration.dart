@@ -6,6 +6,9 @@ import 'package:river_player/river_player.dart';
 ///Master configuration which contains children that configure specific part
 ///of player.
 class BetterPlayerConfiguration {
+  /// If user can pinch to zoom in the video beyond the safe area.
+  final bool enablePinchToZoom;
+
   /// Play the video as soon as it's displayed
   final bool autoPlay;
 
@@ -17,8 +20,7 @@ class BetterPlayerConfiguration {
 
   /// When the video playback runs  into an error, you can build a custom
   /// error message.
-  final Widget Function(BuildContext context, String? errorMessage)?
-      errorBuilder;
+  final Widget Function(BuildContext context, String? errorMessage)? errorBuilder;
 
   /// The Aspect Ratio of the Video. Important to get the correct size of the
   /// video!
@@ -120,6 +122,7 @@ class BetterPlayerConfiguration {
 
   const BetterPlayerConfiguration({
     this.aspectRatio,
+    this.enablePinchToZoom = true,
     this.autoPlay = false,
     this.startAt,
     this.looping = false,
@@ -159,6 +162,7 @@ class BetterPlayerConfiguration {
   });
 
   BetterPlayerConfiguration copyWith({
+    bool? enablePinchToZoom,
     double? aspectRatio,
     bool? autoPlay,
     Duration? startAt,
@@ -190,40 +194,32 @@ class BetterPlayerConfiguration {
     bool? useRootNavigator,
   }) {
     return BetterPlayerConfiguration(
+      enablePinchToZoom: enablePinchToZoom ?? this.enablePinchToZoom,
       aspectRatio: aspectRatio ?? this.aspectRatio,
       autoPlay: autoPlay ?? this.autoPlay,
       startAt: startAt ?? this.startAt,
       looping: looping ?? this.looping,
       fullScreenByDefault: fullScreenByDefault ?? this.fullScreenByDefault,
       placeholder: placeholder ?? this.placeholder,
-      showPlaceholderUntilPlay:
-          showPlaceholderUntilPlay ?? this.showPlaceholderUntilPlay,
+      showPlaceholderUntilPlay: showPlaceholderUntilPlay ?? this.showPlaceholderUntilPlay,
       placeholderOnTop: placeholderOnTop ?? this.placeholderOnTop,
       overlay: overlay ?? this.overlay,
       errorBuilder: errorBuilder ?? this.errorBuilder,
       allowedScreenSleep: allowedScreenSleep ?? this.allowedScreenSleep,
-      fullScreenAspectRatio:
-          fullScreenAspectRatio ?? this.fullScreenAspectRatio,
-      deviceOrientationsOnFullScreen:
-          deviceOrientationsOnFullScreen ?? this.deviceOrientationsOnFullScreen,
-      systemOverlaysAfterFullScreen:
-          systemOverlaysAfterFullScreen ?? this.systemOverlaysAfterFullScreen,
-      deviceOrientationsAfterFullScreen: deviceOrientationsAfterFullScreen ??
-          this.deviceOrientationsAfterFullScreen,
+      fullScreenAspectRatio: fullScreenAspectRatio ?? this.fullScreenAspectRatio,
+      deviceOrientationsOnFullScreen: deviceOrientationsOnFullScreen ?? this.deviceOrientationsOnFullScreen,
+      systemOverlaysAfterFullScreen: systemOverlaysAfterFullScreen ?? this.systemOverlaysAfterFullScreen,
+      deviceOrientationsAfterFullScreen: deviceOrientationsAfterFullScreen ?? this.deviceOrientationsAfterFullScreen,
       routePageBuilder: routePageBuilder ?? this.routePageBuilder,
       eventListener: eventListener ?? this.eventListener,
-      subtitlesConfiguration:
-          subtitlesConfiguration ?? this.subtitlesConfiguration,
-      controlsConfiguration:
-          controlsConfiguration ?? this.controlsConfiguration,
+      subtitlesConfiguration: subtitlesConfiguration ?? this.subtitlesConfiguration,
+      controlsConfiguration: controlsConfiguration ?? this.controlsConfiguration,
       fit: fit ?? this.fit,
       rotation: rotation ?? this.rotation,
-      playerVisibilityChangedBehavior: playerVisibilityChangedBehavior ??
-          this.playerVisibilityChangedBehavior,
+      playerVisibilityChangedBehavior: playerVisibilityChangedBehavior ?? this.playerVisibilityChangedBehavior,
       translations: translations ?? this.translations,
       autoDetectFullscreenDeviceOrientation:
-          autoDetectFullscreenDeviceOrientation ??
-              this.autoDetectFullscreenDeviceOrientation,
+          autoDetectFullscreenDeviceOrientation ?? this.autoDetectFullscreenDeviceOrientation,
       handleLifecycle: handleLifecycle ?? this.handleLifecycle,
       autoDispose: autoDispose ?? this.autoDispose,
       expandToFill: expandToFill ?? this.expandToFill,
