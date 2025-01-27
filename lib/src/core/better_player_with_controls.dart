@@ -172,13 +172,19 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
         children: <Widget>[
           if (placeholderOnTop) _buildPlaceholder(betterPlayerController),
           if (isPinchToZoomEnabled)
-            AnimatedBuilder(
-              animation: zoomListener,
-              builder: (context, child) => Padding(
-                padding: EdgeInsets.zero + MediaQuery.of(context).padding * (1 - zoomListener.value),
-                child: betterPlayerVideoFitWidget,
+           AnimatedBuilder(
+            animation: zoomListener,
+            builder: (context, child) => Padding(
+              padding: EdgeInsets.zero + MediaQuery.of(context).padding * (1 - zoomListener.value),
+              child: Transform.rotate(
+                angle: rotation * pi / 180,
+                child: _BetterPlayerVideoFitWidget(
+                  betterPlayerController,
+                  betterPlayerController.getFit(),
+                ),
               ),
-            )
+            ),
+          )
           else
             betterPlayerVideoFitWidget,
           betterPlayerController.betterPlayerConfiguration.overlay ?? Container(),

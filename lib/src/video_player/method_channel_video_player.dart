@@ -225,6 +225,16 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
+  Future<void> setPictureInPictureActions(List<String> actions) {
+    return _channel.invokeMethod<void>(
+      'setPictureInPictureActions',
+      <String, dynamic>{
+        'actions': actions,
+      },
+    );
+  }
+
+  @override
   Future<void> enablePictureInPicture(int? textureId, double? top, double? left,
       double? width, double? height) async {
     return _channel.invokeMethod<void>(

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="pip_action_play">Play</string>
+    <string name="pip_action_play_description">Play media</string>
+    <string name="pip_action_pause">Pause</string>
+    <string name="pip_action_pause_description">Pause media</string>
+    <string name="pip_action_next">Next</string>
+    <string name="pip_action_next_description">Skip to next media</string>
+    <string name="pip_action_previous">Previous</string>
+    <string name="pip_action_previous_description">Back to previous media</string>
+    <string name="pip_action_forward">Forward</string>
+    <string name="pip_action_forward_description">Rewind forward 10 seconds</string>
+    <string name="pip_action_backward">Backward</string>
+    <string name="pip_action_backward_description">Rewind backward 10 seconds</string>
+
+</resources>

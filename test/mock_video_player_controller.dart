@@ -53,26 +53,26 @@ class MockVideoPlayerController extends VideoPlayerController {
     this.speed = speed;
   }
 
-  @override
-  Future<void> setNetworkDataSource(
-    String dataSource, {
-    VideoFormat? formatHint,
-    Map<String, String?>? headers,
-    bool useCache = false,
-    int? maxCacheSize,
-    int? maxCacheFileSize,
-    String? cacheKey,
-    bool? showNotification,
-    String? title,
-    String? author,
-    String? imageUrl,
-    String? notificationChannelName,
-    Duration? overriddenDuration,
-    String? licenseUrl,
-    String? certificateUrl,
-    Map<String, String>? drmHeaders,
-    String? activityName,
-    String? clearKey,
-    String? videoExtension,
-  }) async {}
+  // @override
+  // Future<void> setNetworkDataSource(
+  //   String dataSource, {
+  //   VideoFormat? formatHint,
+  //   Map<String, String?>? headers,
+  //   bool useCache = false,
+  //   int? maxCacheSize,
+  //   int? maxCacheFileSize,
+  //   String? cacheKey,
+  //   bool? showNotification,
+  //   String? title,
+  //   String? author,
+  //   String? imageUrl,
+  //   String? notificationChannelName,
+  //   Duration? overriddenDuration,
+  //   String? licenseUrl,
+  //   String? certificateUrl,
+  //   Map<String, String>? drmHeaders,
+  //   String? activityName,
+  //   String? clearKey,
+  //   String? videoExtension,
+  // }) async {}
 }

@@ -281,7 +281,7 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget> extends State
 
     _showModalBottomSheet(children);
   }
-
+  
   String _getTrackName(BetterPlayerAsmsTrack track) {
     String result = '${track.height}p';
     int width = track.width ?? 0;
@@ -322,7 +322,7 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget> extends State
     }
     return result;
   }
-
+  
   Widget _buildTrackRow(BetterPlayerAsmsTrack track, String? preferredName) {
     final int width = track.width ?? 0;
     final int height = track.height ?? 0;
