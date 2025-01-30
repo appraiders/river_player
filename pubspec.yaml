@@ -9,7 +9,7 @@ homepage: https://github.com/RevEngine3r/river_player
 documentation: https://jhomlala.github.io/betterplayer/
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: ">=3.2.0 <4.0.0"
   flutter: ">=3.16.0"
 
 dependencies:

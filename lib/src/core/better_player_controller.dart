@@ -216,7 +216,10 @@ class BetterPlayerController {
 
   bool get isPipActive => _isPipActive;
 
-  BetterPlayerPiPActions? _pipActions;
+  BetterPlayerPiPActions? _pipActions; 
+
+  ///Whether the player by default enters full screen mode
+  bool? _fullScreenByDefault;
 
   BetterPlayerController(
     this.betterPlayerConfiguration, {
@@ -516,7 +519,9 @@ class BetterPlayerController {
               _betterPlayerDataSource?.notificationConfiguration?.activityName,
           clearKey: _betterPlayerDataSource?.drmConfiguration?.clearKey,
           videoExtension: _betterPlayerDataSource!.videoExtension,
-          bufferingConfiguration: _betterPlayerDataSource?.bufferingConfiguration,
+          bufferingConfiguration: _betterPlayerDataSource?.bufferingConfiguration, 
+          allowChunklessPreparation:
+              _betterPlayerDataSource?.allowChunklessPreparation,
         );
 
         break;
@@ -594,7 +599,7 @@ class BetterPlayerController {
         ?.videoEventStreamController.stream
         .listen(_handleVideoEvent);
 
-    final fullScreenByDefault = betterPlayerConfiguration.fullScreenByDefault;
+    final fullScreenByDefault = _fullScreenByDefault ?? betterPlayerConfiguration.fullScreenByDefault;
     if (betterPlayerConfiguration.autoPlay) {
       if (fullScreenByDefault && !isFullScreen) {
         enterFullScreen();
@@ -649,22 +654,25 @@ class BetterPlayerController {
     } else {
       _postControllerEvent(BetterPlayerControllerEvent.hideFullscreen);
     }
+  } 
+
+  ///Enable/Disable full screen by default parameter 
+  void setFullScreenByDefault(bool enable) {
+    _fullScreenByDefault = enable;
   }
 
   ///Start video playback. Play will be triggered only if current lifecycle state
   ///is resumed.
-  Future<void> play() async {
+   Future<void> play() async {
     if (videoPlayerController == null) {
       throw StateError("The data source has not been initialized");
     }
 
-    if (_appLifecycleState == AppLifecycleState.resumed) {
-      await videoPlayerController!.play();
-      _hasCurrentDataSourceStarted = true;
-      _wasPlayingBeforePause = null;
-      _postEvent(BetterPlayerEvent(BetterPlayerEventType.play));
-      _postControllerEvent(BetterPlayerControllerEvent.play);
-    }
+    await videoPlayerController!.play();
+    _hasCurrentDataSourceStarted = true;
+    _wasPlayingBeforePause = null;
+    _postEvent(BetterPlayerEvent(BetterPlayerEventType.play));
+    _postControllerEvent(BetterPlayerControllerEvent.play);
   }
 
   ///Enables/disables looping (infinity playback) mode.
@@ -1095,7 +1103,9 @@ class BetterPlayerController {
   // ignore: use_setters_to_change_properties
   ///Setup overridden fit.
   void setOverriddenFit(BoxFit fit) {
-    _overriddenFit = fit;
+    _overriddenFit = fit; 
+
+    _postControllerEvent(BetterPlayerControllerEvent.changeFit);
   }
 
   ///Get fit used in current video. If fit is null, then fit from

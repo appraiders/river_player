@@ -178,7 +178,7 @@ internal class RiverPlayer(
             this.customDefaultLoadControl.bufferForPlaybackMs,
             this.customDefaultLoadControl.bufferForPlaybackAfterRebufferMs
         )
-        loadControl = loadBuilder.build()
+        loadControl = loadBuilder.setBackBuffer(this.customDefaultLoadControl.backBufferDurationMs, true).build()
         exoPlayer = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
             .setLoadControl(loadControl)
@@ -202,7 +202,8 @@ internal class RiverPlayer(
         licenseUrl: String?,
         drmHeaders: Map<String, String>?,
         cacheKey: String?,
-        clearKey: String?
+        clearKey: String?,
+        allowChunklessPreparation: Boolean?
     ) {
         this.key = key
         isInitialized = false
@@ -267,7 +268,7 @@ internal class RiverPlayer(
         } else {
             dataSourceFactory = DefaultDataSource.Factory(context)
         }
-        val mediaSource = buildMediaSource(uri, dataSourceFactory, formatHint, cacheKey, context)
+        val mediaSource = buildMediaSource(uri, dataSourceFactory, formatHint, cacheKey, context, allowChunklessPreparation)
         if (overriddenDuration != 0L) {
             val clippingMediaSource = ClippingMediaSource(mediaSource, 0, overriddenDuration * 1000)
             exoPlayer?.setMediaSource(clippingMediaSource)
@@ -453,7 +454,8 @@ internal class RiverPlayer(
         mediaDataSourceFactory: DataSource.Factory,
         formatHint: String?,
         cacheKey: String?,
-        context: Context
+        context: Context,
+        allowChunklessPreparation: Boolean?
     ): MediaSource {
         val type: Int
         if (formatHint == null) {
@@ -475,37 +477,56 @@ internal class RiverPlayer(
         mediaItemBuilder.setUri(uri)
         if (!cacheKey.isNullOrEmpty()) {
             mediaItemBuilder.setCustomCacheKey(cacheKey)
+        } 
+        val mediaItem = mediaItemBuilder.build()
+
+        var drmSessionManagerProvider: DrmSessionManagerProvider? = null
+        drmSessionManager?.let { drmSessionManager ->
+            drmSessionManagerProvider = DrmSessionManagerProvider { drmSessionManager }
         }
 
-
-        val mediaFactory = when (type) {
-            C.TYPE_SS -> SsMediaSource.Factory(
+     return when (type) {
+            C.CONTENT_TYPE_SS -> SsMediaSource.Factory(
                 DefaultSsChunkSource.Factory(mediaDataSourceFactory),
                 DefaultDataSource.Factory(context, mediaDataSourceFactory)
             )
-
-            C.TYPE_DASH -> DashMediaSource.Factory(
+                .apply {
+                    if (drmSessionManagerProvider != null) {
+                        setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    }
+                }
+                .createMediaSource(mediaItem)
+            C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(
                 DefaultDashChunkSource.Factory(mediaDataSourceFactory),
                 DefaultDataSource.Factory(context, mediaDataSourceFactory)
             )
-
-            C.TYPE_HLS -> HlsMediaSource.Factory(mediaDataSourceFactory)
-
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(
+                .apply {
+                    if (drmSessionManagerProvider != null) {
+                        setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    }
+                }
+                .createMediaSource(mediaItem)
+            C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(mediaDataSourceFactory)
+                .apply {
+                    if (drmSessionManagerProvider != null) {
+                        setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    }
+                }.setAllowChunklessPreparation(allowChunklessPreparation ?: true)
+                .createMediaSource(mediaItem)
+            C.CONTENT_TYPE_OTHER -> ProgressiveMediaSource.Factory(
                 mediaDataSourceFactory,
                 DefaultExtractorsFactory()
             )
-
+                .apply {
+                    if (drmSessionManagerProvider != null) {
+                        setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    }
+                }
+                .createMediaSource(mediaItem)
             else -> {
                 throw IllegalStateException("Unsupported type: $type")
             }
         }
-
-        drmSessionManager?.let { drmSessionManager ->
-            mediaFactory.setDrmSessionManagerProvider(DrmSessionManagerProvider { drmSessionManager })
-        }
-
-        return mediaFactory.createMediaSource(mediaItemBuilder.build())
     }
 
     private fun setupVideoPlayer(

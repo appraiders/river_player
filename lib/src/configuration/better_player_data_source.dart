@@ -74,7 +74,9 @@ class BetterPlayerDataSource {
 
   ///Configuration of video buffering. Currently only supported in Android
   ///platform.
-  final BetterPlayerBufferingConfiguration bufferingConfiguration;
+  final BetterPlayerBufferingConfiguration bufferingConfiguration; 
+
+  final bool? allowChunklessPreparation;
 
   BetterPlayerDataSource(
     this.type,
@@ -98,7 +100,8 @@ class BetterPlayerDataSource {
     this.videoExtension,
     this.drmConfiguration,
     this.placeholder,
-    this.bufferingConfiguration = const BetterPlayerBufferingConfiguration(),
+    this.bufferingConfiguration = const BetterPlayerBufferingConfiguration(), 
+    this.allowChunklessPreparation,
   }) : assert(
             (type == BetterPlayerDataSourceType.network ||
                     type == BetterPlayerDataSourceType.file) ||
@@ -125,7 +128,8 @@ class BetterPlayerDataSource {
     BetterPlayerDrmConfiguration? drmConfiguration,
     Widget? placeholder,
     BetterPlayerBufferingConfiguration bufferingConfiguration =
-        const BetterPlayerBufferingConfiguration(),
+        const BetterPlayerBufferingConfiguration(), 
+    bool? allowChunklessPreparation,
   }) {
     return BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
@@ -143,7 +147,8 @@ class BetterPlayerDataSource {
       videoFormat: videoFormat,
       drmConfiguration: drmConfiguration,
       placeholder: placeholder,
-      bufferingConfiguration: bufferingConfiguration,
+      bufferingConfiguration: bufferingConfiguration, 
+      allowChunklessPreparation: allowChunklessPreparation,
     );
   }
 

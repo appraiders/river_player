@@ -159,13 +159,15 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 var customDefaultLoadControl: CustomDefaultLoadControl? = null
                 if (call.hasArgument(MIN_BUFFER_MS) && call.hasArgument(MAX_BUFFER_MS) &&
                     call.hasArgument(BUFFER_FOR_PLAYBACK_MS) &&
-                    call.hasArgument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS)
+                    call.hasArgument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS) &&
+                    call.hasArgument(BACK_BUFFER_DURATION_MS)
                 ) {
                     customDefaultLoadControl = CustomDefaultLoadControl(
                         call.argument(MIN_BUFFER_MS),
                         call.argument(MAX_BUFFER_MS),
                         call.argument(BUFFER_FOR_PLAYBACK_MS),
-                        call.argument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS)
+                        call.argument(BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS),
+                        call.argument(BACK_BUFFER_DURATION_MS)
                     )
                 }
                 val player = RiverPlayer(
@@ -316,7 +318,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 0L,
                 overriddenDuration.toLong(),
                 null,
-                null, null, null
+                null, null, null, 
+                null
             )
         } else {
             val useCache = getParameter(dataSource, USE_CACHE_PARAMETER, false)
@@ -331,7 +334,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             val licenseUrl = getParameter<String?>(dataSource, LICENSE_URL_PARAMETER, null)
             val clearKey = getParameter<String?>(dataSource, DRM_CLEARKEY_PARAMETER, null)
             val drmHeaders: Map<String, String> =
-                getParameter(dataSource, DRM_HEADERS_PARAMETER, HashMap())
+                getParameter(dataSource, DRM_HEADERS_PARAMETER, HashMap()) 
+            val allowChunklessPreparation = getParameter<Boolean?>(dataSource, ALLOW_CHUNKLESS_PREPARATION, null)
             player.setDataSource(
                 flutterState!!.applicationContext,
                 key,
@@ -346,7 +350,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 licenseUrl,
                 drmHeaders,
                 cacheKey,
-                clearKey
+                clearKey,
+                allowChunklessPreparation
             )
         }
     }
@@ -615,7 +620,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         private const val INDEX_PARAMETER = "index"
         private const val LICENSE_URL_PARAMETER = "licenseUrl"
         private const val DRM_HEADERS_PARAMETER = "drmHeaders"
-        private const val DRM_CLEARKEY_PARAMETER = "clearKey"
+        private const val DRM_CLEARKEY_PARAMETER = "clearKey" 
+        private const val ALLOW_CHUNKLESS_PREPARATION = "allowChunklessPreparation"
         private const val MIX_WITH_OTHERS_PARAMETER = "mixWithOthers"
         private const val ACTIONS_PARAMETER = "actions"
         const val URL_PARAMETER = "url"
@@ -628,7 +634,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         const val MIN_BUFFER_MS = "minBufferMs"
         const val MAX_BUFFER_MS = "maxBufferMs"
         const val BUFFER_FOR_PLAYBACK_MS = "bufferForPlaybackMs"
-        const val BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = "bufferForPlaybackAfterRebufferMs"
+        const val BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = "bufferForPlaybackAfterRebufferMs" 
+        const val BACK_BUFFER_DURATION_MS = "backBufferDurationMs"
         const val CACHE_KEY_PARAMETER = "cacheKey"
         private const val INIT_METHOD = "init"
         private const val CREATE_METHOD = "create"
