@@ -270,10 +270,16 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget>
   ///Resolution selection is used for normal videos
   void _showQualitiesSelectionWidget() {
     // HLS / DASH
-    final List<String> asmsTrackNames =
-        betterPlayerController!.betterPlayerDataSource!.asmsTrackNames ?? [];
     final List<BetterPlayerAsmsTrack> asmsTracks =
         betterPlayerController!.betterPlayerAsmsTracks;
+
+
+    final sortedTracks = [
+      ...(asmsTracks..sort((a, b) => (b.height ?? 0).compareTo(a.height ?? 0)))
+    ];
+
+    final List<String> asmsTrackNames =
+        sortedTracks.map((track) => _getTrackName(track)).toList();
     final List<Widget> children = [];
     for (var index = 0; index < asmsTracks.length; index++) {
       final track = asmsTracks[index];
@@ -303,6 +309,47 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget>
     }
 
     _showModalBottomSheet(children);
+  }
+  
+  String _getTrackName(BetterPlayerAsmsTrack track) {
+    String result = '${track.height}p';
+    int width = track.width ?? 0;
+    int height = track.height ?? 0;
+    if (height < 200) {
+      result = '160p';
+    } else if (height >= 200 && height <= 300) {
+      result = '240p';
+    } else if (height > 300 && height <= 400) {
+      result = '360p';
+    } else if (height > 400 && height <= 500) {
+      result = '480p';
+    } else if (height > 500 && height <= 600) {
+      result = '540p';
+    } else if (height > 600 && height <= 900) {
+      result = '720p';
+    } else if (height > 900 && height <= 1200) {
+      result = '1080p';
+    } else if (height > 1200 && height <= 1800) {
+      result = '1440p';
+    } else if (height > 1800) {
+      result = '2160p';
+    }
+    if (width == 426 && height <= 240) {
+      result = '240p';
+    } else if (width == 640 && height <= 360) {
+      result = '360p';
+    } else if ((width >= 854 && width <= 860) && height <= 480) {
+      result = '480p';
+    } else if (width == 1280 && height <= 720) {
+      result = '720p';
+    } else if (width == 1920 && height <= 1080) {
+      result = '1080p';
+    } else if (width == 2560 && height <= 1440) {
+      result = '1440p';
+    } else if (width == 3840 && height <= 2160) {
+      result = '2160p';
+    }
+    return result;
   }
 
   Widget _buildTrackRow(BetterPlayerAsmsTrack track, String? preferredName) {

@@ -30,6 +30,7 @@ export 'src/core/better_player_controller.dart';
 export 'src/core/better_player_controller_provider.dart';
 export 'src/list/better_player_list_video_player.dart';
 export 'src/list/better_player_list_video_player_controller.dart';
+export 'src/pip/better_player_pip_actions.dart';
 export 'src/playlist/better_player_playlist.dart';
 export 'src/playlist/better_player_playlist_configuration.dart';
 export 'src/playlist/better_player_playlist_controller.dart';
