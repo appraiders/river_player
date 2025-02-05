@@ -510,7 +510,7 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     private fun enablePictureInPicture(player: RiverPlayer) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             player.setupMediaSession(flutterState!!.applicationContext)
-            params = PictureInPictureParams.Builder().setAutoEnterEnabled(true)
+            params = PictureInPictureParams.Builder()
 
             if (actions.isNotEmpty()) {
                 params?.setActions(getRemoteActions(player.isPlaying()))
