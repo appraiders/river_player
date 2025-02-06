@@ -139,8 +139,7 @@ class _BetterPlayerState extends State<BetterPlayer>
         break;
       case BetterPlayerControllerEvent.setupDataSource:
         if (widget.controller.isPipActive == true) {
-          await onFullScreenChanged();
-          await onFullScreenChanged();
+          widget.controller.enterFullScreen();
         } else {
           setState(() {});
         }

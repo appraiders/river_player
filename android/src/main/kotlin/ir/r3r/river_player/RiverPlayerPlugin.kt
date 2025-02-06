@@ -509,8 +509,11 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     private fun enablePictureInPicture(player: RiverPlayer) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            player.setupMediaSession(flutterState!!.applicationContext)
             params = PictureInPictureParams.Builder()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                params = params?.setSeamlessResizeEnabled(true)
+            }
 
             if (actions.isNotEmpty()) {
                 params?.setActions(getRemoteActions(player.isPlaying()))
@@ -519,32 +522,12 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             activity!!.enterPictureInPictureMode(
                 params!!.build()
             )
-            startPictureInPictureListenerTimer(player)
             player.onPictureInPictureStatusChanged(true)
         }
     }
 
     private fun disablePictureInPicture(player: RiverPlayer) {
-        stopPipHandler()
-        activity!!.moveTaskToBack(false)
         player.onPictureInPictureStatusChanged(false)
-        player.disposeMediaSession()
-    }
-
-    private fun startPictureInPictureListenerTimer(player: RiverPlayer) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            pipHandler = Handler(Looper.getMainLooper())
-            pipRunnable = Runnable {
-                if (activity!!.isInPictureInPictureMode) {
-                    pipHandler!!.postDelayed(pipRunnable!!, 100)
-                } else {
-                    player.onPictureInPictureStatusChanged(false)
-                    player.disposeMediaSession()
-                    stopPipHandler()
-                }
-            }
-            pipHandler!!.post(pipRunnable!!)
-        }
     }
 
     private fun dispose(player: RiverPlayer, textureId: Long) {
