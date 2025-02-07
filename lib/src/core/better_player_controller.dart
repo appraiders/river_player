@@ -1136,7 +1136,6 @@ class BetterPlayerController {
         }
         await videoPlayerController?.enablePictureInPicture(
             left: 0, top: 0, width: 0, height: 0);
-        enterFullScreen();
         _postEvent(BetterPlayerEvent(BetterPlayerEventType.pipStart));
         return;
       }
