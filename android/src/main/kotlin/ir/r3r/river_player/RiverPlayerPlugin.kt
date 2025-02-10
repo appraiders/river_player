@@ -502,8 +502,8 @@ class RiverPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
             params?.let {
                 it.setActions(getRemoteActions(null))
+                activity?.setPictureInPictureParams(it.build())
             }
-            activity?.setPictureInPictureParams(params!!.build())
         }
     }
 
