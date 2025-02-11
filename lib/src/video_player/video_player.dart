@@ -227,6 +227,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
               "Event player controller ${event.duration} ${event.isLiveStream}");
           value = value.copyWith(
               duration: event.duration,
+              position: event.position ?? Duration.zero,
               size: event.size,
               isLiveStream: event.isLiveStream);
           _initializingCompleter.complete(null);
